@@ -1,38 +1,85 @@
+<head>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
 
-<div id="search_form" class="search-wrapper __main">
-  <div class="search-form">
-      <input type="text" name="filter_name" value="{{ search }}" placeholder="{{ text_search }}" class="form-control" />
-      <div class="actions">
-        <div class="clear" style="display: none;"><svg width="17" height="16" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.06152 4.01477L12.5468 12.5001" stroke="#333333"/><path d="M4.06152 12.5L12.5468 4.01472" stroke="#333333"/></svg></div>
-        <div class="go"><svg xmlns="http://www.w3.org/2000/svg" width="25" height="24" viewBox="0 0 25 24" fill="none"><path d="M11.0615 19C15.4798 19 19.0615 15.4183 19.0615 11C19.0615 6.58172 15.4798 3 11.0615 3C6.64325 3 3.06152 6.58172 3.06152 11C3.06152 15.4183 6.64325 19 11.0615 19Z" stroke="#979797" stroke-linecap="round" stroke-linejoin="round"/><path d="M21.0615 21L16.7615 16.7" stroke="#979797" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+<body>
+  <div id="search_form" class="search-wrapper __main">
+    <div class="search-form" style="display: inline-flex;">
+      <input type="text" name="filter_name" style="cursor: pointer; width: 30vh; margin: 0.5rem;" value="{{ search }}"
+        placeholder="{{ text_search }}" class="form-control" />
+      <div class="actions" style="width: 30vh; display: flex;">
+        <div class="clear" style="display: none; cursor: pointer; width: 3vh; margin: auto 0;">
+          <svg width="17" height="16" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M4.06152 4.01477L12.5468 12.5001" stroke="#333333" />
+            <path d="M4.06152 12.5L12.5468 4.01472" stroke="#333333" />
+          </svg>
         </div>
+        <div class="go" style="cursor: pointer; width: 3vh; margin: auto 0;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="25" height="24" viewBox="0 0 25 24" fill="none">
+            <path
+              d="M11.0615 19C15.4798 19 19.0615 15.4183 19.0615 11C19.0615 6.58172 15.4798 3 11.0615 3C6.64325 3 3.06152 6.58172 3.06152 11C3.06152 15.4183 6.64325 19 11.0615 19Z"
+              stroke="#979797" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M21.0615 21L16.7615 16.7" stroke="#979797" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </div>
+      </div>
+    </div>
+    <div class="results-wrapper"></div>
   </div>
-  <div class="results-wrapper"></div>
-</div>
-<script type="text/javascript">
-    $(document).delegate('#search_form input[name=\'filter_name\']', 'keyup', function(e) {
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      var $searchInput = $('#search_form input[name="filter_name"]');
+      var $clearBtn = $('.clear');
+      var $resultsWrapper = $('.results-wrapper');
+
+      $searchInput.on('input', function () {
+        if ($searchInput.val().length <= 0) {
+          $clearBtn.hide();
+        } else {
+          $clearBtn.show();
+        }
+      });
+
+      $clearBtn.on('click', function () {
+        $searchInput.val('');
+        $resultsWrapper.empty();
+        $clearBtn.hide();
+      });
+
+      $(document).on('click', function (e) {
+        if (!$(e.target).closest('#search_form').length) {
+          $searchInput.val('');
+          $resultsWrapper.empty();
+          $clearBtn.hide();
+        }
+      });
+
+      $searchInput.on('keyup', function (e) {
         $.ajax({
-            url: 'index.php?route=common/search/results',
-            type: 'post',
-            data: $('#search_form input[type=\'text\'], #search_form input[type=\'hidden\'], #search_form input[type=\'radio\']:checked'),
-            dataType: 'json',
-            beforeSend: function() {
-            
-            },
-            complete: function() {
-            
-            },
-            success: function(json) {
-                if (json['products']) {
-                    for (i = 0; i < json['products'].length; i++) {
-            },
-            error: function(xhr, ajaxOptions, thrownError) {
-                alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+          url: 'index.php?route=common/search/results',
+          type: 'post',
+          data: $('#search_form input[type="text"], #search_form input[type="hidden"], #search_form input[type="radio"]:checked'),
+          dataType: 'json',
+          beforeSend: function () {
+
+          },
+          complete: function () {
+
+          },
+          success: function (json) {
+            if (json['products']) {
+              $resultsWrapper.empty();
+              for (i = 0; i < json['products'].length; i++) {
+                // $resultsWrapper.append('<div>' + json['products'][i].name + '</div>');
+              };
             }
+          },
+          error: function (xhr, ajaxOptions, thrownError) {
+            alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+          }
         });
+      });
     });
-</script>
-
-
-
-
+  </script>
+</body>
