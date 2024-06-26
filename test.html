@@ -21,6 +21,11 @@
         }
     })
 
+    $('.clear').on('click', (event) => {
+        $('.form-control').val('')
+        $(event.currentTarget).hide()
+    })
+
     $(document).delegate('#search_form input[name=\'filter_name\']', 'keyup', function(e) {
         $.ajax({
             url: 'index.php?route=common/search/results',
