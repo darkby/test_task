@@ -1,5 +1,3 @@
-
-<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 <div id="search_form" class="search-wrapper __main">
   <div class="search-form">
       <input type="text" name="filter_name" value="{{ search }}" placeholder="{{ text_search }}" class="form-control" />
@@ -8,23 +6,36 @@
         <div class="go"><svg xmlns="http://www.w3.org/2000/svg" width="25" height="24" viewBox="0 0 25 24" fill="none"><path d="M11.0615 19C15.4798 19 19.0615 15.4183 19.0615 11C19.0615 6.58172 15.4798 3 11.0615 3C6.64325 3 3.06152 6.58172 3.06152 11C3.06152 15.4183 6.64325 19 11.0615 19Z" stroke="#979797" stroke-linecap="round" stroke-linejoin="round"/><path d="M21.0615 21L16.7615 16.7" stroke="#979797" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
       </div>
   </div>
-  <div class="results-wrapper">
-    <p>for test</p>
-  </div>
+  <div class="results-wrapper"></div>
 </div>
 <script type="text/javascript">
-    $('.form-control').on('input', (event) => {
-        if($(event.target).val().length <= 0) {
-            $('.clear').hide()
-        } else {
-            $('.clear').show()
-        }
-    })
+    $(() => {
+        const input = $('.form-control');
+        const clearButton = $('.clear');
+        const results = $('.results-wrapper');
 
-    $('.clear').on('click', (event) => {
-        $('.form-control').val('')
-        $(event.currentTarget).hide()
-    })
+        input.on('input', (event) => {
+            if($(event.target).val().length <= 0) {
+                clearButton.hide()
+            } else {
+                clearButton.show()
+            }
+        })
+
+        clearButton.on('click', (event) => {
+            input.val('')
+            results.empty()
+            $(event.currentTarget).hide()
+        })
+
+        $(document).on('click', (event) => {
+            if(event.target.closest('#search_form') === null) {
+                results.empty()
+                clearButton.hide()
+                input.val('')
+            }
+        })
+    });
 
     $(document).delegate('#search_form input[name=\'filter_name\']', 'keyup', function(e) {
         $.ajax({
